@@ -71,7 +71,13 @@ func (h *HTTP) Call(method string, out interface{}, params ...interface{}) error
 	defer fasthttp.ReleaseRequest(req)
 	defer fasthttp.ReleaseResponse(res)
 
-	req.SetRequestURI(h.addr)
+	// ip+ port patch
+	if strings.Contains(h.addr, ":") {
+		req.SetHost(h.addr)
+	}else {
+		req.SetRequestURI(h.addr)
+	}
+
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
 	req.SetBody(raw)
